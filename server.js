@@ -7,6 +7,14 @@ const app = express();
 
 app.use(cors());
 
+const db = require("./app/models");
+const Role = db.Role;
+
+db.sequelize.sync({ force: true }).then(() => {
+  console.log("Drop and Resync Db");
+  initial();
+});
+
 // parse requests of content-type - application/json
 app.use(express.json());
 
