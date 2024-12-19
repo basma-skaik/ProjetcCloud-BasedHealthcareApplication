@@ -5,26 +5,31 @@ require("dotenv").config();
 
 const app = express();
 
-app.use(cors());
-
-const db = require("./app/models");
-const Role = db.Role;
-
-db.sequelize.sync();
-
-// parse requests of content-type - application/json
+app.use(
+  cors({
+    origin: "http://your-frontend-domain.com", // Replace with your frontend URL
+    credentials: true, // Allow cookies to be sent with requests
+  })
+);
 app.use(express.json());
-
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cookieSession({
     name: "basma-session",
     keys: [process.env.COOKIE_SECRET],
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // Use HTTPS in production
+    sameSite: "strict",
   })
 );
+
+const db = require("./db/models");
+if (process.env.NODE_ENV === "development") {
+  db.sequelize.sync({ force: false, alter: true });
+} else {
+  db.sequelize.sync({ force: false });
+}
 
 app.get("/", (req, res) => {
   res.json({
