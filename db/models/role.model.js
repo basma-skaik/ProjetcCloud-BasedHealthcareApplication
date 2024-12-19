@@ -1,3 +1,4 @@
+"use strict";
 module.exports = (sequelize, Sequelize) => {
   const Role = sequelize.define("roles", {
     roleId: {
@@ -6,9 +7,10 @@ module.exports = (sequelize, Sequelize) => {
       autoIncrement: true,
       field: "role_id",
     },
-    role_name: {
+    roleName: {
       type: Sequelize.STRING,
       allowNull: false,
+      field: "role_name",
     },
     createdAt: {
       type: Sequelize.DATE,

@@ -3,7 +3,7 @@ module.exports = {
   USER: process.env.USER,
   PASSWORD: process.env.PASSWORD,
   DB: process.env.DATABASE,
-  dialect: "mysql",
+  dialect: process.env.dialect,
   pool: {
     max: 5,
     min: 0,

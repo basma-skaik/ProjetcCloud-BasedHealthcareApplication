@@ -1,6 +1,6 @@
-const config = require("../config/db.config");
-
+const config = require("../../config/db.config");
 const Sequelize = require("sequelize");
+
 const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
   host: config.HOST,
   dialect: config.dialect,
@@ -17,8 +17,8 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.User = require("../models/user.model")(sequelize, Sequelize);
-db.Role = require("../models/role.model")(sequelize, Sequelize);
+db.User = require("./user.model")(sequelize, Sequelize);
+db.Role = require("./role.model")(sequelize, Sequelize);
 
 db.User.belongsTo(db.Role, {
   foreignKey: "roleId",
