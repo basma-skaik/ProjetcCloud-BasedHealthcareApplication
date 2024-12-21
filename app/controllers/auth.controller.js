@@ -6,7 +6,7 @@ const Role = db.Role;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-//User Registration
+// Signup Controller
 exports.signup = async (req, res) => {
   try {
     const user = await User.create({
@@ -24,49 +24,50 @@ exports.signup = async (req, res) => {
       message: error.message,
     });
   }
+};
 
-  //User Login
-  exports.login = async (req, res) => {
-    try {
-      const user = await User.findOne({
-        where: { username: req.body.username },
-      });
+// Login Controller
+exports.login = async (req, res) => {
+  try {
+    const user = await User.findOne({
+      where: { username: req.body.username },
+    });
 
-      if (!user) {
-        return res
-          .status(404)
-          .send({ message: `User ${user.username} Not found!` });
-      }
-
-      const passwordIsValid = bcrypt.compareSync(
-        req.body.password,
-        user.password
-      );
-
-      if (!passwordIsValid) {
-        return res
-          .status(401)
-          .send({ accessToken: null, message: "Invalid Password!" });
-      }
-
-      const token = jwt.sign({ id: user.userId }, config.secret, {
-        expiresIn: 86400, //24 hours
-      });
-
-      // Set the Bearer token in the response header
-      res.header("Authorization", `Bearer ${token}`);
-
-      res.status(200).send({
-        id: user.userId,
-        username: user.username,
-        email: user.email,
-        roleId: user.userId,
-        accessToken: token,
-      });
-    } catch (error) {
-      res.status(500).send({
-        message: error.message,
-      });
+    if (!user) {
+      return res
+        .status(404)
+        .send({ message: `User ${req.body.username} Not found!` });
     }
-  };
+
+    const passwordIsValid = bcrypt.compareSync(
+      req.body.password,
+      user.password
+    );
+
+    if (!passwordIsValid) {
+      return res
+        .status(401)
+        .send({ accessToken: null, message: "Invalid Password!" });
+    }
+
+    // Generate a JWT token
+    const token = jwt.sign({ id: user.userId }, config.secret, {
+      expiresIn: 86400, // 24 hours
+    });
+
+    // Set the Bearer token in the response header
+    res.header("Authorization", `Bearer ${token}`);
+
+    res.status(200).send({
+      id: user.userId,
+      username: user.username,
+      email: user.email,
+      roleId: user.roleId,
+      accessToken: token,
+    });
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
 };

@@ -2,9 +2,11 @@ const express = require("express");
 const cors = require("cors");
 const cookieSession = require("cookie-session");
 require("dotenv").config();
+const authRoutes = require("./app/routes/auth.routes");
 
 const app = express();
 
+// Middleware
 app.use(
   cors({
     origin: "http://your-frontend-domain.com", // Replace with your frontend URL
@@ -25,17 +27,20 @@ app.use(
 );
 
 const db = require("./db/models");
-if (process.env.NODE_ENV === "development") {
-  db.sequelize.sync({ force: false, alter: true });
-} else {
-  db.sequelize.sync({ force: false });
-}
+db.sequelize.sync({ force: false });
+// if (process.env.NODE_ENV === "development") {
+//   db.sequelize.sync({ force: false, alter: true });
+// } else {
+//   db.sequelize.sync({ force: false });
+// }
 
-app.get("/", (req, res) => {
-  res.json({
-    message: "Welcome to Cloud-Based Healthcare Application.",
-  });
-});
+app.use("/api/auth", authRoutes);
+
+// app.get("/", (req, res) => {
+//   res.json({
+//     message: "Welcome to Cloud-Based Healthcare Application.",
+//   });
+// });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
