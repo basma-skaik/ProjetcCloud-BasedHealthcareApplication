@@ -27,6 +27,18 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: false,
       field: "password",
     },
+    isVerified: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+      field: "is_verified",
+    },
+    registrationStatus: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      defaultValue: "pending",
+      field: "registration_status",
+    },
     createdAt: {
       type: Sequelize.DATE,
       defaultValue: Sequelize.NOW,
