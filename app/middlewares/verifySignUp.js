@@ -49,9 +49,33 @@ const checkRoleExisted = async (req, res, next) => {
   }
 };
 
+const checkIsVerified = async (req, res, next) => {
+  const userId = req.id; // Assume userId is decoded from JWT
+  try {
+    const user = await User.findByPk(userId);
+    if (!user.isVerified) {
+      return res.status(403).send({ message: "Account not verified!" });
+    }
+    next();
+  } catch (error) {
+    res.status(500).send({ message: "Unable to validate user." });
+  }
+  // const user = await User.findByPk(req.body.username)
+  //   .then((user) => {
+  //     if (!user.isVerified) {
+  //       return res.status(403).send({ message: "Account not verified!" });
+  //     }
+  //     next();
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).send({ message: "Unable to validate user." });
+  //   });
+};
+
 const verifySignUp = {
   checkDuplicateUsernameOrEmail,
   checkRoleExisted,
+  checkIsVerified,
 };
 
 module.exports = verifySignUp;

@@ -1,7 +1,9 @@
 const db = require("../../db/models");
 const config = require("../../config/auth.config");
+
 const User = db.User;
-const Role = db.Role;
+const Doctor = db.Doctor;
+const Patient = db.Patient;
 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -14,6 +16,8 @@ exports.signup = async (req, res) => {
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password, 10),
       roleId: req.body.roleId,
+      isVerified: false,
+      registrationStatus: "pending",
     });
 
     res.status(201).send({
@@ -39,6 +43,11 @@ exports.login = async (req, res) => {
         .send({ message: `User ${req.body.username} Not found!` });
     }
 
+    // Check if the account is verified
+    if (!user.isVerified) {
+      return res.status(403).send({ message: "Account not verified!" });
+    }
+
     const passwordIsValid = bcrypt.compareSync(
       req.body.password,
       user.password
@@ -55,6 +64,35 @@ exports.login = async (req, res) => {
       expiresIn: 86400, // 24 hours
     });
 
+    // Check the user's role and fetch additional information
+    let additionalData = null;
+
+    if (user.roleId === 2) {
+      // Doctor
+      const doctor = await Doctor.findOne({ where: { userId: user.userId } });
+      if (doctor) {
+        additionalData = {
+          doctorId: doctor.doctorId,
+          uniqueDoctorId: doctor.uniqueDoctorId,
+          specialtyId: doctor.specialtyId,
+        };
+      }
+    } else if (user.roleId === 1) {
+      // Patient
+      const patient = await Patient.findOne({ where: { userId: user.userId } });
+      if (patient) {
+        additionalData = {
+          patientId: patient.patientId,
+          uniquePatientId: patient.uniquePatientId,
+          medicalHistory: patient.medicalHistory,
+        };
+      }
+    } else if (user.roleId === 3) {
+      // Admin
+      additionalData = {
+        message: "You are the admin!",
+      };
+    }
     // Set the Bearer token in the response header
     res.header("Authorization", `Bearer ${token}`);
 
@@ -64,6 +102,7 @@ exports.login = async (req, res) => {
       email: user.email,
       roleId: user.roleId,
       accessToken: token,
+      additionalData,
     });
   } catch (error) {
     res.status(500).send({
