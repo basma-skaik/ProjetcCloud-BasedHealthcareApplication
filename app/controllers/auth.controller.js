@@ -84,7 +84,6 @@ exports.login = async (req, res) => {
         additionalData = {
           patientId: patient.patientId,
           uniquePatientId: patient.uniquePatientId,
-          medicalHistory: patient.medicalHistory,
         };
       }
     } else if (user.roleId === 3) {

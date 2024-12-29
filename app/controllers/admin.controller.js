@@ -1,5 +1,4 @@
 const nodemailer = require("nodemailer");
-// const { google } = require("googleapis");
 const db = require("../../db/models");
 const User = db.User;
 const Patient = db.Patient;
@@ -16,18 +15,36 @@ exports.approveUser = async (req, res) => {
         .send({ message: `User ${user.userId} not found!` });
     }
 
+    // Check if user is already approved
+    if (user.registrationStatus === "approved") {
+      return res
+        .status(400)
+        .send({ message: `User ${user.username} is already approved!` });
+    }
+
     let uniqueId = null;
     if (user.roleId === 2) {
       //Doctor
+      // Check if user is already in the Doctor table
+      const existingDoctor = await Doctor.findOne({
+        where: { userId: userId },
+      });
+      if (existingDoctor) {
+        return res.status(400).send({
+          message: `User ${user.username} is already registered as a Doctor!`,
+        });
+      }
+
+      // Generate a unique doctor ID
       let isUnique = false;
       while (!isUnique) {
         uniqueId = Math.floor(100000 + Math.random() * 900000);
 
-        const existingDoctor = await Doctor.findOne({
+        const uniqueDoctorCheck = await Doctor.findOne({
           where: { uniqueDoctorId: uniqueId },
         });
 
-        if (!existingDoctor) {
+        if (!uniqueDoctorCheck) {
           isUnique = true;
         }
       }
@@ -41,15 +58,26 @@ exports.approveUser = async (req, res) => {
       });
     } else if (user.roleId === 1) {
       //Patient
+      // Check if user is already in the Patient table
+      const existingPatient = await Patient.findOne({
+        where: { userId: userId },
+      });
+      if (existingPatient) {
+        return res.status(400).send({
+          message: `User ${user.username} is already registered as a Patient!`,
+        });
+      }
+
+      // Generate a unique patient ID
       let isUnique = false;
       while (!isUnique) {
         uniqueId = Math.floor(100000 + Math.random() * 900000);
 
-        const existingPatient = await Patient.findOne({
+        const uniquePatientCheck = await Patient.findOne({
           where: { uniquePatientId: uniqueId },
         });
 
-        if (!existingPatient) {
+        if (!uniquePatientCheck) {
           isUnique = true;
         }
       }

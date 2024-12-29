@@ -33,15 +33,16 @@ const verifyToken = (req, res, next) => {
 
 const checkAdmin = async (req, res, next) => {
   try {
-    const user = await User.findByPk(req.userId);
+    const userId = req.params.userId;
+    const user = await User.findByPk(userId);
+
     if (!user) {
-      return res.status(404).send({ message: `User ${req.userId} Not found!` });
+      return res.status(404).send({ message: `User ${userId} Not found!` });
     }
 
     const role = await Role.findByPk(user.roleId);
     if (role.roleName === "admin") {
-      next();
-      return;
+      return next();
     }
 
     res.status(403).send({ message: "Require Admin Role!" });
@@ -52,15 +53,15 @@ const checkAdmin = async (req, res, next) => {
 
 const checkDoctor = async (req, res, next) => {
   try {
-    const user = await User.findByPk(req.userId);
+    const userId = req.params.userId;
+    const user = await User.findByPk(userId);
     if (!user) {
-      return res.status(404).send({ message: `User ${req.userId} Not found!` });
+      return res.status(404).send({ message: `User ${userId} Not found!` });
     }
 
     const role = await Role.findByPk(user.roleId);
     if (role.roleName === "doctor") {
-      next();
-      return;
+      return next();
     }
 
     res.status(403).send({ message: "Require Doctor Role!" });
@@ -71,15 +72,16 @@ const checkDoctor = async (req, res, next) => {
 
 const checkPatient = async (req, res, next) => {
   try {
-    const user = await User.findByPk(req.userId);
+    const userId = req.params.userId;
+    const user = await User.findByPk(userId);
+
     if (!user) {
-      return res.status(404).send({ message: `User ${req.userId} Not found!` });
+      return res.status(404).send({ message: `User ${userId} Not found!` });
     }
 
     const role = await Role.findByPk(user.roleId);
     if (role.roleName === "patient") {
-      next();
-      return;
+      return next();
     }
 
     res.status(403).send({ message: "Require Patient Role!" });
