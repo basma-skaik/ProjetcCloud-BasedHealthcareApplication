@@ -22,11 +22,6 @@ module.exports = (sequelize, Sequelize) => {
       unique: true,
       field: "unique_patient_id",
     },
-    medicalHistory: {
-      type: Sequelize.TEXT,
-      allowNull: true,
-      field: "medical_history",
-    },
     createdAt: {
       type: Sequelize.DATE,
       defaultValue: Sequelize.NOW,

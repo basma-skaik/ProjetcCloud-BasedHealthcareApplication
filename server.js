@@ -3,6 +3,7 @@ const cors = require("cors");
 const cookieSession = require("cookie-session");
 require("dotenv").config();
 const authRoutes = require("./app/routes/auth.routes");
+const patientRoutes = require("./app/routes/patient.routes");
 
 const app = express();
 
@@ -35,6 +36,7 @@ db.sequelize.sync({ force: false });
 // }
 
 app.use("/api/auth", authRoutes);
+app.use("/api/patient", patientRoutes);
 // app.use("/api/auth", authRoutes);
 
 // app.get("/", (req, res) => {
