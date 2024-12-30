@@ -1,6 +1,5 @@
-const admin = require("../../firebase"); // Adjust path to match your project structure
-const { v4: uuidv4 } = require("uuid");
-const db = require("../../db/models");
+const db = require("../../db/models"); // Sequelize models
+const PatientFile = require("../../db/models/PatientFile"); // Mongoose model
 
 const Patient = db.Patient;
 
@@ -9,29 +8,32 @@ exports.registerPatientInformation = async (req, res) => {
   const files = req.files;
 
   try {
+    // Verify patient exists in SQL
     const patient = await Patient.findOne({ where: { userId } });
     if (!patient) {
       return res.status(404).json({ message: `Patient ${userId} not found` });
     }
 
-    const bucket = admin.storage().bucket();
-    const uploadPromises = files.map(async (file) => {
-      const uniqueFileName = `${uuidv4()}-${file.originalname}`;
-      const fileUpload = bucket.file(uniqueFileName);
-
-      await fileUpload.save(file.buffer, {
-        metadata: {
-          contentType: file.mimetype,
-        },
+    // Save files to MongoDB
+    const filePromises = files.map(async (file) => {
+      const newFile = new PatientFile({
+        patientId: patient.uniquePatientId,
+        fileName: file.originalname,
+        mimeType: file.mimetype,
+        fileSize: file.size,
+        fileData: file.buffer, // Store binary data in MongoDB
       });
 
+      await newFile.save();
+
       return {
-        name: file.originalname,
-        url: `https://storage.googleapis.com/${bucket.name}/${uniqueFileName}`,
+        fileName: file.originalname,
+        mimeType: file.mimetype,
+        fileSize: file.size,
       };
     });
 
-    const uploadedFiles = await Promise.all(uploadPromises);
+    const uploadedFiles = await Promise.all(filePromises);
 
     res.status(200).json({
       message: "Patient information updated successfully!",
@@ -43,5 +45,19 @@ exports.registerPatientInformation = async (req, res) => {
       message: "Error updating patient",
       error: error.message || "Unknown error",
     });
+  }
+};
+
+exports.getFile = async (req, res) => {
+  try {
+    const file = await PatientFile.findById(req.params.fileId);
+    if (!file) {
+      return res.status(404).send("File not found");
+    }
+    res.setHeader("Content-Type", file.mimeType);
+    res.send(file.fileData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error retrieving file");
   }
 };

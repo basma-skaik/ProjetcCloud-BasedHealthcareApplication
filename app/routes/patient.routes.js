@@ -10,4 +10,6 @@ router.post(
   patientController.registerPatientInformation
 );
 
+router.get("/file/:fileId", patientController.getFile);
+
 module.exports = router;
