@@ -3,6 +3,7 @@ const db = require("../../db/models");
 const User = db.User;
 const Patient = db.Patient;
 const Doctor = db.Doctor;
+const Notification = db.Notification;
 
 exports.approveUser = async (req, res) => {
   try {
@@ -130,6 +131,13 @@ exports.approveUser = async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
+
+    // Save notification to the database
+    await Notification.create({
+      userId: userId,
+      message: `An approval email was sent to ${user.email}.`,
+      createdBy: 1,
+    });
 
     res.status(200).send({
       message: `User approved successfully! Unique ID: ${uniqueId}`,

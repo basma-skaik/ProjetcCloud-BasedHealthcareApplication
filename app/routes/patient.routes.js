@@ -12,4 +12,10 @@ router.post(
 
 router.get("/file/:fileId", patientController.getFile);
 
+router.post(
+  "/bookAppointment/:userId",
+  [authJwt.verifyToken, authJwt.checkPatient],
+  patientController.bookAppointment
+);
+
 module.exports = router;

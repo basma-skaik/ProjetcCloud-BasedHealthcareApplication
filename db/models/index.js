@@ -22,6 +22,8 @@ db.Role = require("./role.model")(sequelize, Sequelize);
 db.Doctor = require("./doctor.model")(sequelize, Sequelize);
 db.Patient = require("./patient.model")(sequelize, Sequelize);
 db.Specialty = require("./specialty.model")(sequelize, Sequelize);
+db.Appointment = require("./appointment.model")(sequelize, Sequelize);
+db.Notification = require("./notification.model")(sequelize, Sequelize);
 
 // Establish relationships
 
@@ -65,6 +67,34 @@ db.Specialty.hasMany(db.Doctor, {
   as: "doctors",
 });
 
-db.ROLES = ["patient", "doctor", "admin"];
+// Patient → Appointment (1:M)
+db.Patient.hasMany(db.Appointment, {
+  foreignKey: "patientId",
+  as: "appointments",
+});
+db.Appointment.belongsTo(db.Patient, {
+  foreignKey: "patientId",
+  as: "patient",
+});
+
+// Doctor → Appointment (1:M)
+db.Doctor.hasMany(db.Appointment, {
+  foreignKey: "doctorId",
+  as: "appointments",
+});
+db.Appointment.belongsTo(db.Doctor, {
+  foreignKey: "doctorId",
+  as: "doctor",
+});
+
+// User → Notification (1:M)
+db.User.hasMany(db.Notification, {
+  foreignKey: "userId",
+  as: "notifications",
+});
+db.Notification.belongsTo(db.User, {
+  foreignKey: "userId",
+  as: "user",
+});
 
 module.exports = db;

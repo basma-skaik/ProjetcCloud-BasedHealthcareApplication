@@ -5,6 +5,7 @@ const connectMongoDB = require("./config/mongo.config");
 require("dotenv").config();
 const authRoutes = require("./app/routes/auth.routes");
 const patientRoutes = require("./app/routes/patient.routes");
+const doctorRoutes = require("./app/routes/doctor.routes");
 
 const app = express();
 
@@ -40,6 +41,8 @@ db.sequelize.sync({ force: false });
 
 app.use("/api/auth", authRoutes);
 app.use("/api/patient", patientRoutes);
+app.use("/api/doctor", doctorRoutes);
+
 // app.use("/api/auth", authRoutes);
 
 // app.get("/", (req, res) => {
