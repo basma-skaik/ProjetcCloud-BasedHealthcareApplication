@@ -1,14 +1,14 @@
 "use strict";
 
-/** @type {import('sequelize-cli').Migration} */
-module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("medical_records", {
-      recordId: {
+module.exports = (sequelize, Sequelize) => {
+  const Diagnosis = sequelize.define(
+    "diagnosis",
+    {
+      diagnosisId: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        field: "record_id",
+        field: "diagnosis_id",
       },
       patientId: {
         type: Sequelize.INTEGER,
@@ -28,15 +28,20 @@ module.exports = {
         },
         field: "doctor_id",
       },
-      recordType: {
+      diagnosis: {
         type: Sequelize.STRING,
         allowNull: false,
-        field: "record_type",
+        field: "diagnosis",
       },
-      recordData: {
+      treatment: {
         type: Sequelize.TEXT,
         allowNull: false,
-        field: "record_data",
+        field: "treatment",
+      },
+      prescription: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+        field: "prescription",
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -68,10 +73,12 @@ module.exports = {
         allowNull: true,
         field: "deleted_by",
       },
-    });
-  },
+    },
+    {
+      tableName: "Diagnoses",
+      timestamps: true,
+    }
+  );
 
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("medical_records");
-  },
+  return Diagnosis;
 };

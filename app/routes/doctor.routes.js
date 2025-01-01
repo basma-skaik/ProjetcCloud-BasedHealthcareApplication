@@ -21,4 +21,16 @@ router.get(
   doctorController.getPatientsList
 );
 
+router.post(
+  "/appointments/follow-up/:userId",
+  [authJwt.verifyToken, authJwt.checkDoctor],
+  doctorController.createFollowUpAppointment
+);
+
+router.post(
+  "/diagnosis/:userId",
+  [authJwt.verifyToken, authJwt.checkDoctor],
+  doctorController.recordDiagnosis
+);
+
 module.exports = router;

@@ -24,6 +24,7 @@ db.Patient = require("./patient.model")(sequelize, Sequelize);
 db.Specialty = require("./specialty.model")(sequelize, Sequelize);
 db.Appointment = require("./appointment.model")(sequelize, Sequelize);
 db.Notification = require("./notification.model")(sequelize, Sequelize);
+db.Diagnosis = require("./diagnosis.model")(sequelize, Sequelize);
 
 // Establish relationships
 
@@ -97,4 +98,23 @@ db.Notification.belongsTo(db.User, {
   as: "user",
 });
 
+// Patient → Diagnosis (1:M )
+db.Diagnosis.belongsTo(db.Patient, {
+  foreignKey: "patient_id",
+  as: "patient",
+});
+db.Patient.hasMany(db.Diagnosis, {
+  foreignKey: "patient_id",
+  as: "diagnoses",
+});
+
+// Doctor → Diagnosis (1:M )
+db.Diagnosis.belongsTo(db.Doctor, {
+  foreignKey: "doctor_id",
+  as: "doctor",
+});
+db.Doctor.hasMany(db.Diagnosis, {
+  foreignKey: "doctor_id",
+  as: "diagnoses",
+});
 module.exports = db;
