@@ -33,4 +33,10 @@ router.post(
   doctorController.recordDiagnosis
 );
 
+router.get(
+  "/search/patients/:userId",
+  [authJwt.verifyToken, authJwt.checkDoctor],
+  doctorController.searchPatients
+);
+
 module.exports = router;

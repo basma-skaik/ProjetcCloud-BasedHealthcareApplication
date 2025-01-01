@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const { Op } = require("sequelize");
 const db = require("../../db/models");
 const Doctor = db.Doctor;
 const Patient = db.Patient;
@@ -319,6 +320,47 @@ exports.recordDiagnosis = async (req, res) => {
     console.error("Error recording diagnosis:", error);
     res.status(500).send({
       message: "An error occurred while recording the diagnosis",
+      error: error.message || "Unknown error",
+    });
+  }
+};
+
+exports.searchPatients = async (req, res) => {
+  try {
+    const { query } = req.query; // Get search query from request
+    if (!query) {
+      return res.status(400).send({ message: "Search query is required." });
+    }
+
+    // Search patients by name or medical history
+    const patients = await Patient.findAll({
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["username", "email"],
+          where: {
+            username: { [Op.like]: `%${query}%` },
+          },
+        },
+      ],
+      where: {
+        patientId: { [Op.like]: `%${query}%` },
+      },
+    });
+
+    if (!patients.length) {
+      return res.status(404).send({ message: "No patients found." });
+    }
+
+    res.status(200).send({
+      message: "Patients retrieved successfully",
+      patients,
+    });
+  } catch (error) {
+    console.error("Error searching patients:", error);
+    res.status(500).send({
+      message: "An error occurred while searching for patients",
       error: error.message || "Unknown error",
     });
   }

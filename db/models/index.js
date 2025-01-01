@@ -25,6 +25,7 @@ db.Specialty = require("./specialty.model")(sequelize, Sequelize);
 db.Appointment = require("./appointment.model")(sequelize, Sequelize);
 db.Notification = require("./notification.model")(sequelize, Sequelize);
 db.Diagnosis = require("./diagnosis.model")(sequelize, Sequelize);
+db.MedicalAdvice = require("./medical-advice.model")(sequelize, Sequelize);
 
 // Establish relationships
 

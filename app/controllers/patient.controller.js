@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const { Op } = require("sequelize");
 const db = require("../../db/models"); // Sequelize models
 const PatientFile = require("../../db/models/PatientFile"); // Mongoose model
 const Patient = db.Patient;
@@ -6,6 +7,7 @@ const Appointment = db.Appointment;
 const Doctor = db.Doctor;
 const User = db.User;
 const Notification = db.Notification;
+const MedicalAdvice = db.MedicalAdvice;
 
 exports.registerPatientInformation = async (req, res) => {
   const userId = req.params.userId;
@@ -154,6 +156,69 @@ exports.bookAppointment = async (req, res) => {
     console.error("Error booking appointment:", error);
     res.status(500).send({
       message: "An error occurred while booking the appointment",
+      error: error.message || "Unknown error",
+    });
+  }
+};
+
+exports.searchDoctors = async (req, res) => {
+  try {
+    const { query } = req.query; // Get search query from request
+    if (!query) {
+      return res.status(400).send({ message: "Search query is required." });
+    }
+
+    // Search doctors by name or specialty
+    const doctors = await Doctor.findAll({
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["username", "email"],
+          where: {
+            username: { [Op.like]: `%${query}%` },
+          },
+        },
+      ],
+      where: {
+        specialtyId: { [Op.like]: `%${query}%` }, // Assuming specialtyId is a text column or match the specialty name
+      },
+    });
+
+    if (!doctors.length) {
+      return res.status(404).send({ message: "No doctors found." });
+    }
+
+    res.status(200).send({
+      message: "Doctors retrieved successfully",
+      doctors,
+    });
+  } catch (error) {
+    console.error("Error searching doctors:", error);
+    res.status(500).send({
+      message: "An error occurred while searching for doctors",
+      error: error.message || "Unknown error",
+    });
+  }
+};
+
+exports.getMedicalAdvice = async (req, res) => {
+  try {
+    // Fetch all medical advice
+    const advices = await MedicalAdvice.findAll();
+
+    if (!advices.length) {
+      return res.status(404).send({ message: "No medical advice found." });
+    }
+
+    res.status(200).send({
+      message: "Medical advice retrieved successfully",
+      advices,
+    });
+  } catch (error) {
+    console.error("Error retrieving medical advice:", error);
+    res.status(500).send({
+      message: "An error occurred while retrieving medical advice",
       error: error.message || "Unknown error",
     });
   }

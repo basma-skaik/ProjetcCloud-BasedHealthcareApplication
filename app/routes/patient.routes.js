@@ -18,4 +18,15 @@ router.post(
   patientController.bookAppointment
 );
 
+router.get(
+  "/search/doctors/:userId",
+  [authJwt.verifyToken, authJwt.checkPatient],
+  patientController.searchDoctors
+);
+
+router.get(
+  "/advice/:userId",
+  [authJwt.verifyToken, authJwt.checkPatient],
+  patientController.getMedicalAdvice
+);
 module.exports = router;
