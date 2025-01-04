@@ -10,7 +10,7 @@ const Notification = db.Notification;
 const MedicalAdvice = db.MedicalAdvice;
 
 exports.registerPatientInformation = async (req, res) => {
-  const userId = req.params.userId;
+  const userId = req.user.userId;
   const files = req.files;
 
   try {

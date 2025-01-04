@@ -45,7 +45,7 @@ exports.registerDoctorInformation = async (req, res) => {
 exports.applyAppointment = async (req, res) => {
   try {
     const appointmentId = req.params.appointmentId;
-    const doctorId = req.params.userId;
+    const doctorId = req.user.userId;
 
     // Find the appointment
     const appointment = await Appointment.findByPk(appointmentId);
@@ -119,7 +119,7 @@ exports.applyAppointment = async (req, res) => {
 
 exports.getPatientsList = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.user.userId;
 
     // Fetch the doctorId using the userId
     const doctor = await Doctor.findOne({ where: { userId } });
@@ -183,7 +183,7 @@ exports.getPatientsList = async (req, res) => {
 exports.createFollowUpAppointment = async (req, res) => {
   try {
     const { patientId, date, time, notes } = req.body;
-    const doctorId = req.params.userId;
+    const doctorId = req.user.userId;
 
     // Validate patient
     const patient = await Patient.findByPk(patientId, {
@@ -256,7 +256,7 @@ exports.createFollowUpAppointment = async (req, res) => {
 exports.recordDiagnosis = async (req, res) => {
   try {
     const { patientId, diagnosis, treatment, prescription } = req.body;
-    const doctorId = req.params.userId;
+    const doctorId = req.user.userId;
 
     // Validate patient
     const patient = await Patient.findByPk(patientId, {
