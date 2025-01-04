@@ -3,6 +3,7 @@ const db = require("../../db/models");
 const User = db.User;
 const Patient = db.Patient;
 const Doctor = db.Doctor;
+const Role = db.Role;
 const Notification = db.Notification;
 
 exports.approveUser = async (req, res) => {
@@ -146,50 +147,69 @@ exports.approveUser = async (req, res) => {
     res.status(500).send({ message: error.message });
   }
 };
-exports.updateUserInfo = async (req, res) =>{
-  try {
-    const { id, name, email  } = req.body;
-    const user = await User.findByPk(userId);
 
-    if (!user) {
-      return res
-        .status(404)
-        .send({ message: `User ${user.userId} not found!` });
-    }
+// exports.updateUserInfo = async (req, res) =>{
+//   try {
+   
+//     const { name, email  } = req.body;
+//     const id = req.params;
+//     const user = await User.findByPk(id);
 
-  } catch (error) {
-    
-  }
+//     if (!user) {
+//       return res
+//       .status(404)
+//       .send({ message: `User ${user.userId} not found!` });
+//     }
+
+//     user.name = name || user.name;
+//     user.email = email || user.email;
+//     user.password = password || user.password;
+//     await user.save();
+
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ message: "Cant Update the Information for this user", error });
+//   }
   
-}
-exports.deleteUserInfo = async (req, res) =>{
-  try {
-    const id = req.body.id;
-    const user = await User.findByPk(id);
+// }
 
-    if (!user.length) {
-      return res.status(404).send({ message: "No User found." });
-    }
+// exports.deleteUserInfo = async (req, res) =>{
+//   try {
+//     const id = req.body.id;
+//     const user = await User.findByPk(id);
 
-    res.status(200).send({
-      message: "User deleted successfully",
-      user,
-    });
-  } catch (error) {
-    console.error("Error delete User :", error);
-    res.status(500).send({
-      message: "An error occurred while deleting User",
-      error: error.message || "Unknown error",
-    });
-  }
+//     if (!user.length) {
+//       return res.status(404).send({ message: "No User found." });
+//     }
+//     await user.destroy();
 
-}
-exports.getUserInfo = async (req, res) =>{
-  try {
-    
-  } catch (error) {
-    
-  }
+//     return res.status(200).json({ message: "User account deleted successfully" });
 
-}
+//   } catch (error) {
+//     console.error("Error delete User :", error);
+//     res.status(500).send({
+//       message: "An error occurred while deleting User",
+//       error: error.message || "Unknown error",
+//     });
+//   }
+
+// }
+// exports.getUserInfo = async (req, res) =>{
+//   try {
+//     const users = await User.findAll({ attributes: ["id","name" ,"roleId", "email"], include: [
+//       {
+//         model: Role,
+//         attributes: ["name"], // Fetch only the role name
+//       },
+//     ],});
+  
+//     return res.status(200).json(users);
+//   } catch (error) {
+//     res.status(500).send({
+//       message: "An error occurred while retrieving Users",
+//       error: error.message || "Unknown error",
+//     });
+//   }
+
+// }
 
