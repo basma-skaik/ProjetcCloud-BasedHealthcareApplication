@@ -9,7 +9,7 @@ const User = db.User;
 const Diagnosis = db.Diagnosis;
 
 exports.registerDoctorInformation = async (req, res) => {
-  const userId = req.params.userId;
+  const userId = req.user.userId;
   const specialtyId = req.body.specialtyId;
 
   try {
@@ -29,7 +29,6 @@ exports.registerDoctorInformation = async (req, res) => {
     doctor.specialtyId = specialtyId;
     doctor.updatedBy = doctor.userId;
     await doctor.save();
-
     res.status(200).send({
       message: "Doctor specialty updated successfully",
       doctor,

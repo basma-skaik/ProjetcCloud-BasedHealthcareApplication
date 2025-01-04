@@ -7,7 +7,7 @@ const Notification = db.Notification;
 
 exports.approveUser = async (req, res) => {
   try {
-    const userId = req.params.userId; //user that the admin will approve him
+    const userId = req.user.userId; //user that the admin will approve him
     const user = await User.findByPk(userId);
 
     if (!user) {
@@ -146,3 +146,50 @@ exports.approveUser = async (req, res) => {
     res.status(500).send({ message: error.message });
   }
 };
+exports.updateUserInfo = async (req, res) =>{
+  try {
+    const { id, name, email  } = req.body;
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res
+        .status(404)
+        .send({ message: `User ${user.userId} not found!` });
+    }
+
+  } catch (error) {
+    
+  }
+  
+}
+exports.deleteUserInfo = async (req, res) =>{
+  try {
+    const id = req.body.id;
+    const user = await User.findByPk(id);
+
+    if (!user.length) {
+      return res.status(404).send({ message: "No User found." });
+    }
+
+    res.status(200).send({
+      message: "User deleted successfully",
+      user,
+    });
+  } catch (error) {
+    console.error("Error delete User :", error);
+    res.status(500).send({
+      message: "An error occurred while deleting User",
+      error: error.message || "Unknown error",
+    });
+  }
+
+}
+exports.getUserInfo = async (req, res) =>{
+  try {
+    
+  } catch (error) {
+    
+  }
+
+}
+

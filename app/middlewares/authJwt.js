@@ -26,14 +26,14 @@ const verifyToken = (req, res, next) => {
         message: "Unauthorized!",
       });
     }
-    req.userId = decoded.id; // Store the user ID in the request object
+    req.user.userId = decoded.id; // Store the user ID in the request object
     next();
   });
 };
 
 const checkAdmin = async (req, res, next) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.user.userId;
     const user = await User.findByPk(userId);
 
     if (!user) {
@@ -53,7 +53,7 @@ const checkAdmin = async (req, res, next) => {
 
 const checkDoctor = async (req, res, next) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.user.userId;
     const user = await User.findByPk(userId);
     if (!user) {
       return res.status(404).send({ message: `User ${userId} Not found!` });
@@ -72,7 +72,7 @@ const checkDoctor = async (req, res, next) => {
 
 const checkPatient = async (req, res, next) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.user.userId;
     const user = await User.findByPk(userId);
 
     if (!user) {
