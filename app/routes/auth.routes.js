@@ -17,12 +17,12 @@ router.post(
   authController.signup
 );
 
-// Approve user (Admin functionality)
-router.post(
-  "/admin/approve-user/:userId",
-  // [authJwt.verifyToken, authJwt.checkAdmin],
-  adminController.approveUser
-);
+// // Approve user (Admin functionality)
+// router.post(
+//   "/admin/approve-user/:userId",
+//   // [authJwt.verifyToken, authJwt.checkAdmin],
+//   adminController.approveUser
+// );
 
 //admin login
 router.post(
