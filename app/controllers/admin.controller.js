@@ -175,8 +175,8 @@ exports.updateUserInfo = async (req, res) =>{
 
 exports.deleteUserInfo = async (req, res) =>{
   try {
-    const id = req.body.id;
-    const user = await User.findByPk(id);
+    const userId = req.body.userId;
+    const user = await User.findByPk(userId);
 
     if (!user.length) {
       return res.status(404).send({ message: "No User found." });
@@ -196,7 +196,7 @@ exports.deleteUserInfo = async (req, res) =>{
 }
 exports.getUserInfo = async (req, res) =>{
   try {
-    const users = await User.findAll({ attributes: ["id","name" ,"roleId", "email"], include: [
+    const users = await User.findAll({ attributes: ["userId","name" ,"roleId", "email"], include: [
       {
         model: Role,
         attributes: ["name"], // Fetch only the role name
