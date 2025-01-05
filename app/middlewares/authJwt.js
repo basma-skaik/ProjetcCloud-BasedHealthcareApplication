@@ -30,6 +30,7 @@ const verifyToken = (req, res, next) => {
       req.user={}
     }
     req.user.userId = decoded.id; // Store the user ID in the request object
+    console.log("req.user.userId", req.user.userId);
     next();
   });
 };
@@ -37,6 +38,7 @@ const verifyToken = (req, res, next) => {
 const checkAdmin = async (req, res, next) => {
   try {
     const userId = req.user.userId;
+    console.log("userId 11111", userId);
     const user = await User.findByPk(userId);
 
     if (!user) {
