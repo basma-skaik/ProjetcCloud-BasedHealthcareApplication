@@ -150,11 +150,10 @@ exports.approveUser = async (req, res) => {
 
 exports.updateUserInfo = async (req, res) => {
   try {
-   
-    const { name, email  } = req.body;
+    const userAdmin = req.user.userId;
+    const { username, email } = req.body;
     const userId = req.params.userId;
     const user = await User.findByPk(userId);
-
     if (!user) {
       return res
         .status(404)
@@ -163,9 +162,9 @@ exports.updateUserInfo = async (req, res) => {
 
     user.username = username || user.username;
     user.email = email || user.email;
+    user.updatedBy = userAdmin;
     await user.save();
-    res.status(201).json({message:"User updated successfully ", user})
-    
+    res.status(201).json({ message: "User updated successfully ", user });
   } catch (error) {
     console.error(error);
     return res
@@ -176,17 +175,19 @@ exports.updateUserInfo = async (req, res) => {
 
 exports.deleteUserInfo = async (req, res) => {
   try {
-    const userId = req.body.userId;
+    const userAdmin = req.user.userId;
+    const userId = req.params.userId;
     const user = await User.findByPk(userId);
 
-    if (!user.length) {
+    if (!user) {
       return res.status(404).send({ message: "No User found." });
     }
-    await user.destroy();
+    user.deletedBy = userAdmin;
+    await user.save();
 
     return res
       .status(200)
-      .json({ message: "User account deleted successfully" });
+      .json({ message: "User account deleted successfully", user });
   } catch (error) {
     console.error("Error delete User :", error);
     res.status(500).send({
@@ -197,13 +198,17 @@ exports.deleteUserInfo = async (req, res) => {
 };
 exports.getUserInfo = async (req, res) => {
   try {
-    const users = await User.findAll({ attributes: ["userId","name" ,"roleId", "email"], include: [
-      {
-        model: Role,
-        attributes: ["name"], // Fetch only the role name
-      },
-    ],});
-  
+    const users = await User.findAll({
+      attributes: ["userId", "username", "roleId", "email"],
+      include: [
+        {
+          model: Role,
+          as: "role", // Use the alias defined in the association
+          attributes: ["role_name"], // Fetch only the role name
+        },
+      ],
+    });
+
     return res.status(200).json(users);
   } catch (error) {
     res.status(500).send({

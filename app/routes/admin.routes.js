@@ -16,4 +16,16 @@ router.put(
   adminController.updateUserInfo
 );
 
+router.put(
+  "/delete/:userId",
+  [authJwt.verifyToken, authJwt.checkAdmin],
+  adminController.deleteUserInfo
+);
+
+router.get(
+  "/getUserInfo",
+  [authJwt.verifyToken, authJwt.checkAdmin],
+  adminController.getUserInfo
+);
+
 module.exports = router;
