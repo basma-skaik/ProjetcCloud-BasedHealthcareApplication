@@ -152,8 +152,8 @@ exports.updateUserInfo = async (req, res) =>{
   try {
    
     const { name, email  } = req.body;
-    const id = req.params;
-    const user = await User.findByPk(id);
+    const userId = req.params.userId;
+    const user = await User.findByPk(userId);
 
     if (!user) {
       return res
@@ -163,9 +163,9 @@ exports.updateUserInfo = async (req, res) =>{
 
     user.name = name || user.name;
     user.email = email || user.email;
-    user.password = password || user.password;
     await user.save();
-
+    res.status(201).json({message:"User updated successfully ", user})
+    
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Cant Update the Information for this user", error });
