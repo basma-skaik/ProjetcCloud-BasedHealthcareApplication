@@ -8,7 +8,7 @@ const Notification = db.Notification;
 
 exports.approveUser = async (req, res) => {
   try {
-    const userId = req.user.userId; //user that the admin will approve him
+    const userId = req.params.userId; //user that the admin will approve him
     const user = await User.findByPk(userId);
 
     if (!user) {
@@ -150,11 +150,9 @@ exports.approveUser = async (req, res) => {
 
 exports.updateUserInfo = async (req, res) => {
   try {
+   
+    const { name, email  } = req.body;
     const userId = req.params.userId;
-    const { username, email } = req.body;
-    console.log("11111", username, email);
-    console.log("88888", req.params);
-    // return;
     const user = await User.findByPk(userId);
 
     if (!user) {
@@ -166,7 +164,8 @@ exports.updateUserInfo = async (req, res) => {
     user.username = username || user.username;
     user.email = email || user.email;
     await user.save();
-    return res.status(201).send({ message: "user updated suc", user });
+    res.status(201).json({message:"User updated successfully ", user})
+    
   } catch (error) {
     console.error(error);
     return res
@@ -177,8 +176,8 @@ exports.updateUserInfo = async (req, res) => {
 
 exports.deleteUserInfo = async (req, res) => {
   try {
-    const id = req.body.id;
-    const user = await User.findByPk(id);
+    const userId = req.body.userId;
+    const user = await User.findByPk(userId);
 
     if (!user.length) {
       return res.status(404).send({ message: "No User found." });
@@ -198,16 +197,13 @@ exports.deleteUserInfo = async (req, res) => {
 };
 exports.getUserInfo = async (req, res) => {
   try {
-    const users = await User.findAll({
-      attributes: ["id", "name", "roleId", "email"],
-      include: [
-        {
-          model: Role,
-          attributes: ["name"], // Fetch only the role name
-        },
-      ],
-    });
-
+    const users = await User.findAll({ attributes: ["userId","name" ,"roleId", "email"], include: [
+      {
+        model: Role,
+        attributes: ["name"], // Fetch only the role name
+      },
+    ],});
+  
     return res.status(200).json(users);
   } catch (error) {
     res.status(500).send({

@@ -6,7 +6,7 @@ const adminController = require("../controllers/admin.controller");
 // Approve user (Admin functionality)
 router.post(
   "/admin/approve-user/:userId",
-  // [authJwt.verifyToken, authJwt.checkAdmin],
+  [authJwt.verifyToken, authJwt.checkAdmin],
   adminController.approveUser
 );
 
