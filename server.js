@@ -6,6 +6,7 @@ require("dotenv").config();
 const authRoutes = require("./app/routes/auth.routes");
 const patientRoutes = require("./app/routes/patient.routes");
 const doctorRoutes = require("./app/routes/doctor.routes");
+const adminRoutes = require("./app/routes/admin.routes");
 
 const app = express();
 
@@ -40,6 +41,7 @@ db.sequelize.sync({ force: false });
 // }
 
 app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api/patient", patientRoutes);
 app.use("/api/doctor", doctorRoutes);
 

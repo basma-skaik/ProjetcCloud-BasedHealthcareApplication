@@ -148,32 +148,34 @@ exports.approveUser = async (req, res) => {
   }
 };
 
-exports.updateUserInfo = async (req, res) =>{
+exports.updateUserInfo = async (req, res) => {
   try {
-   
-    const { name, email  } = req.body;
-    const id = req.params;
-    const user = await User.findByPk(id);
+    const userId = req.params.userId;
+    const { username, email } = req.body;
+    console.log("11111", username, email);
+    console.log("88888", req.params);
+    // return;
+    const user = await User.findByPk(userId);
 
     if (!user) {
       return res
-      .status(404)
-      .send({ message: `User ${user.userId} not found!` });
+        .status(404)
+        .send({ message: `User ${user.userId} not found!` });
     }
 
-    user.name = name || user.name;
+    user.username = username || user.username;
     user.email = email || user.email;
-    user.password = password || user.password;
     await user.save();
-
+    return res.status(201).send({ message: "user updated suc", user });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Cant Update the Information for this user", error });
+    return res
+      .status(500)
+      .send({ message: "Cant Update the Information for this user", error });
   }
-  
-}
+};
 
-exports.deleteUserInfo = async (req, res) =>{
+exports.deleteUserInfo = async (req, res) => {
   try {
     const id = req.body.id;
     const user = await User.findByPk(id);
@@ -183,8 +185,9 @@ exports.deleteUserInfo = async (req, res) =>{
     }
     await user.destroy();
 
-    return res.status(200).json({ message: "User account deleted successfully" });
-
+    return res
+      .status(200)
+      .json({ message: "User account deleted successfully" });
   } catch (error) {
     console.error("Error delete User :", error);
     res.status(500).send({
@@ -192,17 +195,19 @@ exports.deleteUserInfo = async (req, res) =>{
       error: error.message || "Unknown error",
     });
   }
-
-}
-exports.getUserInfo = async (req, res) =>{
+};
+exports.getUserInfo = async (req, res) => {
   try {
-    const users = await User.findAll({ attributes: ["id","name" ,"roleId", "email"], include: [
-      {
-        model: Role,
-        attributes: ["name"], // Fetch only the role name
-      },
-    ],});
-  
+    const users = await User.findAll({
+      attributes: ["id", "name", "roleId", "email"],
+      include: [
+        {
+          model: Role,
+          attributes: ["name"], // Fetch only the role name
+        },
+      ],
+    });
+
     return res.status(200).json(users);
   } catch (error) {
     res.status(500).send({
@@ -210,6 +215,4 @@ exports.getUserInfo = async (req, res) =>{
       error: error.message || "Unknown error",
     });
   }
-
-}
-
+};
