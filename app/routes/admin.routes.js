@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { validateRequest, verifySignUp, authJwt } = require("../middlewares");
+const { authJwt } = require("../middlewares");
 const adminController = require("../controllers/admin.controller");
 
 // Approve user (Admin functionality)

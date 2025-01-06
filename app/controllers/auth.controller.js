@@ -1,10 +1,9 @@
 const db = require("../../db/models");
 const config = require("../../config/auth.config");
-
+const { blacklistToken } = require("../middlewares/authJwt");
 const User = db.User;
 const Doctor = db.Doctor;
 const Patient = db.Patient;
-
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -108,4 +107,19 @@ exports.login = async (req, res) => {
       message: error.message,
     });
   }
+};
+
+exports.logout = (req, res) => {
+  let token = req.headers["authorization"];
+
+  if (!token || !token.startsWith("Bearer ")) {
+    return res
+      .status(400)
+      .send({ message: "No token provided or invalid format!" });
+  }
+
+  token = token.split(" ")[1];
+  blacklistToken(token);
+
+  return res.status(200).send({ message: "Logged out successfully." });
 };

@@ -5,6 +5,9 @@ const db = require("../../db/models");
 const User = db.User;
 const Role = db.Role;
 
+// Temporary in-memory blacklist
+const blacklist = new Set();
+
 // Verify JWT Token
 const verifyToken = (req, res, next) => {
   let token = req.headers["authorization"];
@@ -18,6 +21,13 @@ const verifyToken = (req, res, next) => {
 
   // Extract the token part after "Bearer "
   token = token.split(" ")[1];
+
+  // Check if the token is blacklisted
+  if (blacklist.has(token)) {
+    return res
+      .status(401)
+      .send({ message: "Unauthorized! Token has been invalidated." });
+  }
 
   // Verify the token
   jwt.verify(token, config.secret, (err, decoded) => {
@@ -34,6 +44,7 @@ const verifyToken = (req, res, next) => {
   });
 };
 
+// Check Admin Role
 const checkAdmin = async (req, res, next) => {
   try {
     const userId = req.user.userId;
@@ -54,10 +65,12 @@ const checkAdmin = async (req, res, next) => {
   }
 };
 
+// Check Doctor Role
 const checkDoctor = async (req, res, next) => {
   try {
     const userId = req.user.userId;
     const user = await User.findByPk(userId);
+
     if (!user) {
       return res.status(404).send({ message: `User ${userId} Not found!` });
     }
@@ -73,6 +86,7 @@ const checkDoctor = async (req, res, next) => {
   }
 };
 
+// Check Patient Role
 const checkPatient = async (req, res, next) => {
   try {
     const userId = req.user.userId;
@@ -93,11 +107,16 @@ const checkPatient = async (req, res, next) => {
   }
 };
 
-const authJwt = {
-  verifyToken: verifyToken,
-  checkAdmin: checkAdmin,
-  checkDoctor: checkDoctor,
-  checkPatient: checkPatient,
+// Add token to blacklist
+const blacklistToken = (token) => {
+  blacklist.add(token);
 };
 
-module.exports = authJwt;
+// Export functions
+module.exports = {
+  verifyToken,
+  checkAdmin,
+  checkDoctor,
+  checkPatient,
+  blacklistToken,
+};

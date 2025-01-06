@@ -31,7 +31,8 @@ router.post(
   authController.login
 );
 
-// Login route
 router.post("/login", [validateRequest.validateLogin], authController.login);
+
+router.post("/logout", [authJwt.verifyToken], authController.logout);
 
 module.exports = router;
