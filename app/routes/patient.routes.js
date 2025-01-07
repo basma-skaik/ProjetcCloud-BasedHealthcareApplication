@@ -5,7 +5,7 @@ const patientController = require("../controllers/patient.controller");
 const upload = require("../middlewares/fileUpload");
 
 router.post(
-  "/registerPatientInformation/:userId",
+  "/registerPatientInformation",
   [authJwt.verifyToken, authJwt.checkPatient, upload.array("files")],
   patientController.registerPatientInformation
 );
