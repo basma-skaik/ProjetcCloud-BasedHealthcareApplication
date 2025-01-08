@@ -25,7 +25,7 @@ router.get(
 );
 
 router.get(
-  "/advice/:userId",
+  "/advice",
   [authJwt.verifyToken, authJwt.checkPatient],
   patientController.getMedicalAdvice
 );
