@@ -15,7 +15,7 @@ connectMongoDB();
 // Middleware
 app.use(
   cors({
-    origin: "http://your-frontend-domain.com", // Replace with your frontend URL
+    origin: "https://unipro-f16c2.web.app/", // Replace with your frontend URL
     credentials: true, // Allow cookies to be sent with requests
   })
 );
