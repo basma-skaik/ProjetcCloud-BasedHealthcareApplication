@@ -15,6 +15,11 @@ router.post(
 );
 
 router.post("/login", [validateRequest.validateLogin], authController.login);
+router.post("/hello",(req, res)=>{
+  res.json({
+    mes :"here"
+  })
+});
 
 router.post("/logout", [authJwt.verifyToken], authController.logout);
 
