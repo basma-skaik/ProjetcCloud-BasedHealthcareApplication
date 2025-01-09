@@ -3,7 +3,7 @@ module.exports = {
   USER: process.env.USER,
   PASSWORD: process.env.PASSWORD,
   DB: process.env.DATABASE,
-  dialect: process.env.dialect || 'sqlite3',
+  dialect: process.env.dialect || 'sqlite',
   storage: "./h2_database.sqlite",
   pool: {
     max: 5,
