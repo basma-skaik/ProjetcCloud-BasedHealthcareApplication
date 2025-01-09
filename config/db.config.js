@@ -1,9 +1,10 @@
 module.exports = {
-  HOST: process.env.HOST,
+  HOST: process.env.HOST ||3306,
   USER: process.env.USER,
   PASSWORD: process.env.PASSWORD,
   DB: process.env.DATABASE,
-  dialect: process.env.dialect,
+  dialect: process.env.dialect || 'sqlite3',
+  storage: "./h2_database.sqlite",
   pool: {
     max: 5,
     min: 0,
