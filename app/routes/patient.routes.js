@@ -10,22 +10,26 @@ router.post(
   patientController.registerPatientInformation
 );
 
-router.get("/file/:fileId", patientController.getFile);
+router.get(
+  "/file/:fileId",
+  [authJwt.verifyToken, authJwt.checkPatient],
+  patientController.getFile
+);
 
 router.post(
-  "/bookAppointment/:userId",
+  "/bookAppointment",
   [authJwt.verifyToken, authJwt.checkPatient],
   patientController.bookAppointment
 );
 
 router.get(
-  "/search/doctors/:userId",
+  "/search/doctors",
   [authJwt.verifyToken, authJwt.checkPatient],
   patientController.searchDoctors
 );
 
 router.get(
-  "/advice/:userId",
+  "/advice",
   [authJwt.verifyToken, authJwt.checkPatient],
   patientController.getMedicalAdvice
 );

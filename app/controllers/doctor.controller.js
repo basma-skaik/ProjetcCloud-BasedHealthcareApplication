@@ -7,6 +7,7 @@ const Appointment = db.Appointment;
 const Notification = db.Notification;
 const User = db.User;
 const Diagnosis = db.Diagnosis;
+const Specialty = db.Specialty;
 
 exports.registerDoctorInformation = async (req, res) => {
   const userId = req.user.userId;
@@ -54,7 +55,7 @@ exports.applyAppointment = async (req, res) => {
     }
 
     // Ensure the doctor is managing this appointment
-    const doctor = await Doctor.findOne({ where: { userId: doctorId } });
+    const doctor = await Doctor.findOne({ where: { doctorId } });
     if (!doctor || doctor.doctorId !== appointment.doctorId) {
       return res
         .status(403)

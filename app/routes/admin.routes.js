@@ -1,11 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const { authJwt } = require("../middlewares");
+const { validateRequest, authJwt } = require("../middlewares");
 const adminController = require("../controllers/admin.controller");
+const authController = require("../controllers/auth.controller");
+
+//admin login
+router.post("/login", [validateRequest.validateLogin], authController.login);
 
 // Approve user (Admin functionality)
 router.post(
-  "/admin/approve-user/:userId",
+  "/approve-user/:userId",
   [authJwt.verifyToken, authJwt.checkAdmin],
   adminController.approveUser
 );

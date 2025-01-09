@@ -4,13 +4,13 @@ const { authJwt } = require("../middlewares");
 const doctorController = require("../controllers/doctor.controller");
 
 router.post(
-  "/registerDoctorInformation/:userId",
+  "/registerDoctorInformation",
   [authJwt.verifyToken, authJwt.checkDoctor],
   doctorController.registerDoctorInformation
 );
 
 router.put(
-  "/appointments/:appointmentId/apply/:userId",
+  "/appointments/:appointmentId/apply",
   [authJwt.verifyToken, authJwt.checkDoctor],
   doctorController.applyAppointment
 );
