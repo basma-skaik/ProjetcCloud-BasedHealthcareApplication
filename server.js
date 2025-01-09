@@ -11,7 +11,7 @@ const adminRoutes = require("./app/routes/admin.routes");
 
 const app = express();
 
-connectMongoDB();
+// connectMongoDB();
 
 // Middleware
 app.use(
