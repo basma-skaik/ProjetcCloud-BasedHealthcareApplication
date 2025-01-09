@@ -7,6 +7,7 @@ const Appointment = db.Appointment;
 const Notification = db.Notification;
 const User = db.User;
 const Diagnosis = db.Diagnosis;
+const Specialty = db.Specialty;
 
 exports.registerDoctorInformation = async (req, res) => {
   const userId = req.user.userId;
@@ -45,7 +46,7 @@ exports.registerDoctorInformation = async (req, res) => {
 exports.applyAppointment = async (req, res) => {
   try {
     const appointmentId = req.params.appointmentId;
-    const doctorId = req.user.userId;
+    const userId = req.user.userId;
 
     // Find the appointment
     const appointment = await Appointment.findByPk(appointmentId);
@@ -54,7 +55,7 @@ exports.applyAppointment = async (req, res) => {
     }
 
     // Ensure the doctor is managing this appointment
-    const doctor = await Doctor.findOne({ where: { userId: doctorId } });
+    const doctor = await Doctor.findOne({ where: { userId } });
     if (!doctor || doctor.doctorId !== appointment.doctorId) {
       return res
         .status(403)
@@ -63,7 +64,7 @@ exports.applyAppointment = async (req, res) => {
 
     // Update appointment status to "approved"
     appointment.status = "approved";
-    appointment.updatedBy = doctorId;
+    appointment.updatedBy = userId;
     await appointment.save();
 
     // Get the patient's email

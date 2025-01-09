@@ -4,37 +4,37 @@ const { authJwt } = require("../middlewares");
 const doctorController = require("../controllers/doctor.controller");
 
 router.post(
-  "/registerDoctorInformation/:userId",
+  "/registerDoctorInformation",
   [authJwt.verifyToken, authJwt.checkDoctor],
   doctorController.registerDoctorInformation
 );
 
 router.put(
-  "/appointments/:appointmentId/apply/:userId",
+  "/appointments/:appointmentId/apply",
   [authJwt.verifyToken, authJwt.checkDoctor],
   doctorController.applyAppointment
 );
 
 router.get(
-  "/patients/:userId",
+  "/patients",
   [authJwt.verifyToken, authJwt.checkDoctor],
   doctorController.getPatientsList
 );
 
 router.post(
-  "/appointments/follow-up/:userId",
+  "/appointments/follow-up",
   [authJwt.verifyToken, authJwt.checkDoctor],
   doctorController.createFollowUpAppointment
 );
 
 router.post(
-  "/diagnosis/:userId",
+  "/diagnosis",
   [authJwt.verifyToken, authJwt.checkDoctor],
   doctorController.recordDiagnosis
 );
 
 router.get(
-  "/search/patients/:userId",
+  "/search/patients",
   [authJwt.verifyToken, authJwt.checkDoctor],
   doctorController.searchPatients
 );
