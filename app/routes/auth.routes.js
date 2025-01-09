@@ -15,7 +15,7 @@ router.post(
 );
 
 router.post("/login", [validateRequest.validateLogin], authController.login);
-router.post("/hello",(req, res)=>{
+router.get("/hello",(req, res)=>{
   res.json({
     mes :"here"
   })
