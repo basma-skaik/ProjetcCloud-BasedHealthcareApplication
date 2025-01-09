@@ -3,6 +3,7 @@ const cors = require("cors");
 const cookieSession = require("cookie-session");
 const connectMongoDB = require("./config/mongo.config");
 require("dotenv").config();
+
 const authRoutes = require("./app/routes/auth.routes");
 const patientRoutes = require("./app/routes/patient.routes");
 const doctorRoutes = require("./app/routes/doctor.routes");             
@@ -15,7 +16,7 @@ connectMongoDB();
 // Middleware
 app.use(
   cors({
-    origin: "http://your-frontend-domain.com", // Replace with your frontend URL
+    origin: "https://unipro-f16c2.web.app/", // Replace with your frontend URL
     credentials: true, // Allow cookies to be sent with requests
   })
 );
