@@ -16,25 +16,25 @@ router.put(
 );
 
 router.get(
-  "/patients/:userId",
+  "/patients",
   [authJwt.verifyToken, authJwt.checkDoctor],
   doctorController.getPatientsList
 );
 
 router.post(
-  "/appointments/follow-up/:userId",
+  "/appointments/follow-up",
   [authJwt.verifyToken, authJwt.checkDoctor],
   doctorController.createFollowUpAppointment
 );
 
 router.post(
-  "/diagnosis/:userId",
+  "/diagnosis",
   [authJwt.verifyToken, authJwt.checkDoctor],
   doctorController.recordDiagnosis
 );
 
 router.get(
-  "/search/patients/:userId",
+  "/search/patients",
   [authJwt.verifyToken, authJwt.checkDoctor],
   doctorController.searchPatients
 );
