@@ -3,9 +3,8 @@ module.exports = {
   USER: process.env.USER,
   PASSWORD: process.env.PASSWORD,
   DB: process.env.DATABASE,
-  dialect: process.env.dialect || 'mysql',
+  dialect: process.env.dialect || 'sqlite3',
   storage: "./h2_database.sqlite",
-  logging: false , 
   pool: {
     max: 5,
     min: 0,
